@@ -15,28 +15,28 @@ func TestNewMatrix(t *testing.T) {
 func TestCol(t *testing.T) {
 	m := NewMatrix(1, 13)
 	if m.Col() != 13 {
-		t.Errorf("m.Col() does not working.")
+		t.Errorf("m.Col() does not work.")
 	}
 }
 
 func TestRow(t *testing.T) {
 	m := NewMatrix(12, 1)
 	if m.Row() != 12 {
-		t.Errorf("m.Row() does not working.")
+		t.Errorf("m.Row() does not work.")
 	}
 }
 
 func TestDimension(t *testing.T) {
 	m := NewMatrix(12, 13)
 	if row, col := m.Dimension(); (row != 12) || (col != 13) {
-		t.Errorf("m.Dimension() does not working.")
+		t.Errorf("m.Dimension() does not work.")
 	}
 }
 
 func TestGetSet(t *testing.T) {
 	m := NewMatrix(2, 3)
 	if m.Set(1, 2, 12.345); m.Get(1, 2) != 12.345 {
-		t.Errorf("m.Set() or m.At() does not working.")
+		t.Errorf("m.Set() or m.At() does not work.")
 	}
 }
 
@@ -46,7 +46,7 @@ func TestDuplicate(t *testing.T) {
 
 	d := m.Duplicate()
 	if d.Get(1, 2) != 12.345 {
-		t.Errorf("m.Duplicate() does not working.")
+		t.Errorf("m.Duplicate() does not work.")
 	}
 
 	d.Set(1, 2, 11.234)
@@ -60,18 +60,74 @@ func TestT(t *testing.T) {
 	m.Set(1, 2, 12.345)
 	tr := m.T()
 	if tr.Col() != 2 {
-		t.Errorf("m.T() does not working.")
+		t.Errorf("m.T() does not work.")
 	} else if tr.Row() != 3 {
-		t.Errorf("m.T() does not working.")
+		t.Errorf("m.T() does not work.")
 	}
 
 	if tr.Get(2, 1) != 12.345 {
-		t.Errorf("m.T() does not working.")
+		t.Errorf("m.T() does not work.")
 	}
 
 	tr.Set(2, 1, 11.234)
 	if m.Get(1, 2) == 11.234 {
 		t.Errorf("m.T() returns a shallow copy.")
+	}
+}
+
+func TestDot(t *testing.T) {
+	m := NewMatrixWith(2, 3, []float64{1.0, 2.0, 3.0, 4.0, 5.0, 6.0})
+	n := NewMatrixWith(3, 2, []float64{6.0, 5.0, 4.0, 3.0, 2.0, 1.0})
+
+	res := m.Dot(n)
+	if (res.Get(0, 0) != 20) || (res.Get(0, 1) != 14) || (res.Get(1, 0) != 56) || (res.Get(1, 1) != 41) {
+		t.Errorf("m.Dot() does not work.")
+	}
+}
+
+func TestAdd(t *testing.T) {
+	m := NewMatrixWith(2, 3, []float64{1.0, 2.0, 3.0, 4.0, 5.0, 6.0})
+	n := NewMatrixWith(2, 3, []float64{1.0, 1.0, 1.0, 1.0, 1.0, 1.0})
+	n2 := NewMatrixWith(1, 3, []float64{1.0, 1.0, 1.0})
+	n3 := NewMatrixWith(2, 1, []float64{1.0, 1.0})
+
+	res := m.Add(n)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 3.0) || (res.Get(0, 2) != 4.0) ||
+		(res.Get(1, 0) != 5.0) || (res.Get(1, 1) != 6.0) || (res.Get(1, 2) != 7.0) {
+		t.Errorf("m.Add() does not work.")
+	}
+
+	res = m.Add(n2)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 3.0) || (res.Get(0, 2) != 4.0) ||
+		(res.Get(1, 0) != 5.0) || (res.Get(1, 1) != 6.0) || (res.Get(1, 2) != 7.0) {
+		t.Errorf("m.Add() does not work.")
+	}
+
+	res = m.Add(n3)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 3.0) || (res.Get(0, 2) != 4.0) ||
+		(res.Get(1, 0) != 5.0) || (res.Get(1, 1) != 6.0) || (res.Get(1, 2) != 7.0) {
+		t.Errorf("m.Add() does not work.")
+	}
+
+	res = n2.Add(m)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 3.0) || (res.Get(0, 2) != 4.0) ||
+		(res.Get(1, 0) != 5.0) || (res.Get(1, 1) != 6.0) || (res.Get(1, 2) != 7.0) {
+		t.Errorf("m.Add() does not work.")
+	}
+
+	res = n3.Add(m)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 3.0) || (res.Get(0, 2) != 4.0) ||
+		(res.Get(1, 0) != 5.0) || (res.Get(1, 1) != 6.0) || (res.Get(1, 2) != 7.0) {
+		t.Errorf("m.Add() does not work.")
+	}
+}
+
+func TestColSum(t *testing.T) {
+	m := NewMatrixWith(2, 3, []float64{1.0, 2.0, 3.0, 4.0, 5.0, 6.0})
+
+	res := m.ColSum()
+	if (res.Get(0, 0) != 5) || (res.Get(0, 1) != 7) || (res.Get(0, 2) != 9) {
+		t.Errorf("m.ColSum() does not work.")
 	}
 }
 
