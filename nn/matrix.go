@@ -3,6 +3,7 @@ package nn
 import (
 	"fmt"
 	"log"
+	"math"
 	"strings"
 )
 
@@ -207,6 +208,41 @@ func (m *Matrix) Add(n *Matrix) *Matrix {
 }
 
 /*
+Mul element-wise multiplication.
+*/
+func (m *Matrix) Mul(n *Matrix) *Matrix {
+	row, col := m.Dimension()
+	row2, col2 := n.Dimension()
+	if (row == row2) && (col == col2) {
+		res := NewMatrix(row, col)
+		for r := 0; r < row; r++ {
+			for c := 0; c < col; c++ {
+				val := m.Get(r, c) * n.Get(r, c)
+				res.Set(r, c, val)
+			}
+		}
+		return res
+	} else {
+		log.Panicf("The 'size' of the matrix is not correct.")
+		return nil
+	}
+}
+
+/*
+Sum todo
+*/
+func (m *Matrix) Sum() float64 {
+	row, col := m.Dimension()
+	res := 0.0
+	for r := 0; r < row; r++ {
+		for c := 0; c < col; c++ {
+			res += m.Get(r, c)
+		}
+	}
+	return res
+}
+
+/*
 ColSum todo
 */
 func (m *Matrix) ColSum() *Matrix {
@@ -221,7 +257,7 @@ func (m *Matrix) ColSum() *Matrix {
 }
 
 /*
-Max todo
+Max return the biggest element value.
 */
 func (m *Matrix) Max() float64 {
 	row, col := m.Dimension()
@@ -230,11 +266,79 @@ func (m *Matrix) Max() float64 {
 	for r := 0; r < row; r++ {
 		for c := 0; c < col; c++ {
 			val = m.Get(r, c)
-			if (val > res)
+			if val > res {
 				res = val
+			}
 		}
 	}
 	return res
+}
+
+/*
+AddScalar todo
+*/
+func (m *Matrix) AddScalar(scalar float64) *Matrix {
+	row, col := m.Dimension()
+	res := NewMatrix(row, col)
+	for r := 0; r < row; r++ {
+		for c := 0; c < col; c++ {
+			res.Set(r, c, m.Get(r, c)+scalar)
+		}
+	}
+	return res
+}
+
+/*
+MulScalar todo
+*/
+func (m *Matrix) MulScalar(scalar float64) *Matrix {
+	row, col := m.Dimension()
+	res := NewMatrix(row, col)
+	for r := 0; r < row; r++ {
+		for c := 0; c < col; c++ {
+			res.Set(r, c, m.Get(r, c)*scalar)
+		}
+	}
+	return res
+}
+
+/*
+Exp todo
+*/
+func (m *Matrix) Exp() *Matrix {
+	row, col := m.Dimension()
+	res := NewMatrix(row, col)
+	for r := 0; r < row; r++ {
+		for c := 0; c < col; c++ {
+			res.Set(r, c, math.Exp(m.Get(r, c)))
+		}
+	}
+	return res
+}
+
+/*
+Log todo
+*/
+func (m *Matrix) Log() *Matrix {
+	row, col := m.Dimension()
+	res := NewMatrix(row, col)
+	for r := 0; r < row; r++ {
+		for c := 0; c < col; c++ {
+			res.Set(r, c, math.Log(m.Get(r, c)))
+		}
+	}
+	return res
+}
+
+/*
+Softmax todo
+*/
+func (m *Matrix) Softmax() *Matrix {
+	a := m.AddScalar(-m.Max()) // prevent overflow
+	exp := a.Exp()
+	sum := exp.Sum()
+	y := exp.MulScalar(1.0 / sum)
+	return y
 }
 
 func (m *Matrix) String() string {

@@ -27,12 +27,12 @@ func (layer *AffineLayer) Forward(x *Matrix) *Matrix {
 
 /*
 Backword 역전파 구현.
- (N, o) 크기의 Matrix를 입력으로 받아 (1, o) 크기의 Matrix를 반환한다.
+ (N, o) 크기의 Matrix를 입력으로 받아 (N, i) 크기의 Matrix를 반환한다.
 */
 func (layer *AffineLayer) Backword(dy *Matrix) *Matrix {
-	dx := dy.Dot(layer.w.T())
-	layer.dw = layer.x.T().Dot(dy)
-	layer.db = dy.ColSum()
+	dx := dy.Dot(layer.w.T())      // (N, o)(o, i) = (N, i)
+	layer.dw = layer.x.T().Dot(dy) // (i, N)(N, o) = (i, o)
+	layer.db = dy.ColSum()         // ??? 이걸 batchSize(N)으로 나누어 주어야 하는 거 아닌가?
 
 	return dx
 }

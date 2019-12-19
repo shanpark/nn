@@ -2,6 +2,7 @@ package nn
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
 
@@ -122,12 +123,81 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestMul(t *testing.T) {
+	m := NewMatrixWith(2, 2, []float64{1.0, 2.0, 3.0, 4.0})
+	n := NewMatrixWith(2, 2, []float64{2.0, 2.0, 2.0, 2.0})
+
+	res := m.Mul(n)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 4.0) ||
+		(res.Get(1, 0) != 6.0) || (res.Get(1, 1) != 8.0) {
+		t.Errorf("m.Mul() does not work.")
+	}
+}
+
+func TestSum(t *testing.T) {
+	m := NewMatrixWith(2, 2, []float64{1.0, 2.0, 3.0, 4.0})
+
+	res := m.Sum()
+	if res != 10.0 {
+		t.Errorf("m.Sum() does not work.")
+	}
+}
+
 func TestColSum(t *testing.T) {
 	m := NewMatrixWith(2, 3, []float64{1.0, 2.0, 3.0, 4.0, 5.0, 6.0})
 
 	res := m.ColSum()
 	if (res.Get(0, 0) != 5) || (res.Get(0, 1) != 7) || (res.Get(0, 2) != 9) {
 		t.Errorf("m.ColSum() does not work.")
+	}
+}
+
+func TestMax(t *testing.T) {
+	m := NewMatrixWith(2, 2, []float64{1.0, 2.0, 3.0, 4.0})
+
+	res := m.Max()
+	if res != 4.0 {
+		t.Errorf("m.Max() does not work.")
+	}
+}
+
+func TestAddScalar(t *testing.T) {
+	m := NewMatrixWith(2, 2, []float64{1.0, 2.0, 3.0, 4.0})
+
+	res := m.AddScalar(1.0)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 3.0) ||
+		(res.Get(1, 0) != 4.0) || (res.Get(1, 1) != 5.0) {
+		t.Errorf("m.AddScalar() does not work.")
+	}
+}
+
+func TestMulScalar(t *testing.T) {
+	m := NewMatrixWith(2, 2, []float64{1.0, 2.0, 3.0, 4.0})
+
+	res := m.MulScalar(2.0)
+	if (res.Get(0, 0) != 2.0) || (res.Get(0, 1) != 4.0) ||
+		(res.Get(1, 0) != 6.0) || (res.Get(1, 1) != 8.0) {
+		t.Errorf("m.MulScalar() does not work.")
+	}
+}
+
+func TestExp(t *testing.T) {
+	m := NewMatrixWith(2, 2, []float64{1.0, 2.0, 3.0, 4.0})
+
+	res := m.Exp()
+	if (res.Get(0, 0) != math.Exp(1.0)) || (res.Get(0, 1) != math.Exp(2.0)) ||
+		(res.Get(1, 0) != math.Exp(3.0)) || (res.Get(1, 1) != math.Exp(4.0)) {
+		t.Errorf("m.Exp() does not work.")
+	}
+}
+
+func TestLog(t *testing.T) {
+	m := NewMatrixWith(2, 2, []float64{1.0, 2.0, 3.0, 4.0})
+
+	res := m.Log()
+	if (res.Get(0, 0) != math.Log(1.0)) || (res.Get(0, 1) != math.Log(2.0)) ||
+		(res.Get(1, 0) != math.Log(3.0)) || (res.Get(1, 1) != math.Log(4.0)) {
+		t.Errorf("m.Log() does not work.")
 	}
 }
 
